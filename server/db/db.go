@@ -16,6 +16,11 @@ func NewDatabase() (*Database, error) {
 		return nil, err
 	}
 
+	// ! Verify the connection with Ping
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
 	return &Database{db: db}, nil
 }
 

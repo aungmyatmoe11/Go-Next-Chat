@@ -21,14 +21,17 @@ func NewRepository(db DBTX) Repository {
 }
 
 func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) {
-	var lastInsertId int
-	query := "INSERT INTO users(username, email, password) VALUES ($1, $2, $3) returning id"
-	err := r.db.QueryRowContext(ctx, query, user.Username, user.Email, user.Password).Scan(lastInsertId)
+	var lastInsertId int64
+	query := "INSERT INTO users(username, email, password) VALUES ($1, $2, $3) RETURNING id"
+
+	// Use &lastInsertId to pass a pointer
+	err := r.db.QueryRowContext(ctx, query, user.Username, user.Email, user.Password).Scan(&lastInsertId)
 	if err != nil {
 		return &User{}, err
 	}
 
-	user.ID = int64(lastInsertId)
+	// Assign the returned ID to the user object
+	user.ID = lastInsertId
 
 	return user, nil
 }
