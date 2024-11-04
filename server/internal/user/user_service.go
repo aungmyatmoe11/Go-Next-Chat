@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"server/util"
 	"strconv"
 	"time"
@@ -29,6 +30,11 @@ func (s *service) CreateUser(c context.Context, req *CreateUserReq) (*CreateUser
 
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
+
+	// ! Check Email Exists
+	if s.Repository.CheckEmail(ctx, req.Email) {
+		return nil, fmt.Errorf("email already exists")
+	}
 
 	hashedPassword, err := util.HashPassword(req.Password)
 	if err != nil {

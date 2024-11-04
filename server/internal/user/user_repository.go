@@ -46,3 +46,16 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, e
 
 	return &u, nil
 }
+
+// ! Check Email exists
+func (r *repository) CheckEmail(ctx context.Context, email string) bool {
+	var exists bool
+
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)`
+	err := r.db.QueryRowContext(ctx, query, email).Scan(&exists)
+	if err != nil {
+		return false
+	}
+
+	return exists
+}
