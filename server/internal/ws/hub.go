@@ -1,5 +1,10 @@
 package ws
 
+import (
+	"fmt"
+	"server/enums"
+)
+
 type Room struct {
 	ID      string             `json:"id"`
 	Name    string             `json:"name"`
@@ -41,10 +46,11 @@ func (h *Hub) Run() {
 					// ? broadcast a message saying that the client has left the room
 					if len(room.Clients) != 0 {
 						h.Broadcast <- &Message{
-							Content:  "A user has left the room",
+							Content:  fmt.Sprintf("%s has left the room", cl.Username),
 							RoomID:   cl.RoomID,
 							UserID:   cl.ID,
 							Username: cl.Username,
+							Action:   enums.Left,
 						}
 					}
 

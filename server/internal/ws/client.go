@@ -2,6 +2,7 @@ package ws
 
 import (
 	"log"
+	"server/enums"
 
 	"github.com/gorilla/websocket"
 )
@@ -19,6 +20,7 @@ type Message struct {
 	RoomID   string `json:"roomId"`
 	UserID   string `json:"userId"`
 	Username string `json:"username"`
+	Action   int    // Using int type for enum values
 }
 
 func (c *Client) writeMessage() {
@@ -56,6 +58,7 @@ func (c *Client) readMessage(hub *Hub) {
 			RoomID:   c.RoomID,
 			UserID:   c.ID,
 			Username: c.Username,
+			Action:   enums.Read,
 		}
 
 		hub.Broadcast <- msg
